@@ -1,34 +1,30 @@
 package ru.geekbrains.lesson6;
 
-import android.content.Intent;
-import android.content.res.Configuration;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.LinearLayout;
-import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.DividerItemDecoration;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class CitiesFragment extends Fragment {
+public class CitiesFragment extends Fragment implements CitiesAdapterCallback {
 
-    // for example
-    private List<SimpleNote> notes = new ArrayList<>();
-
-    private boolean isLandscapeOrientation;
+    private final List<City> cities = new ArrayList<>();
+    private final CitiesAdapter citiesAdapter = new CitiesAdapter(this);
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         initArrayList();
-        isLandscapeOrientation =
-            getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE;
     }
 
     @Override
@@ -43,56 +39,42 @@ public class CitiesFragment extends Fragment {
         initView(view);
     }
 
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        citiesAdapter.setItems(cities);
+    }
+
+    @Override
+    public void onOnItemClicked(int position) {
+        City city = cities.get(position);
+        Toast.makeText(requireContext(), city.getTitle(), Toast.LENGTH_SHORT).show();
+    }
+
     private void initView(View view) {
-        LinearLayout linearLayout = (LinearLayout) view;
-        String[] array = getResources().getStringArray(R.array.cities);
-        int padding = getResources().getDimensionPixelSize(R.dimen.default_margin);
-
-        for (int i = 0; i < array.length; i++) {
-            String name = array[i];
-            TextView textView = new TextView(linearLayout.getContext());
-            textView.setText(name);
-            textView.setPadding(padding, 0, padding, 0);
-            textView.setTextSize(30f);
-            int index = i;
-            textView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    checkOrientation(index);
-                }
-            });
-            linearLayout.addView(textView);
-        }
+        RecyclerView recyclerView = view.findViewById(R.id.rv_cities);
+        recyclerView.setLayoutManager(new LinearLayoutManager(recyclerView.getContext()));
+        recyclerView.addItemDecoration(new DividerItemDecoration(recyclerView.getContext(), RecyclerView.VERTICAL));
+        recyclerView.addItemDecoration(new CitiesSpaceDecorator(getResources().getDimensionPixelSize(R.dimen.default_margin)));
+        recyclerView.setAdapter(citiesAdapter);
     }
 
-    private void checkOrientation(int index) {
-        if (isLandscapeOrientation) {
-            openEmblemFragment(index);
-        } else {
-            startEmblemActivity(index);
-        }
-    }
-
-    private void openEmblemFragment(int index) {
-        EmblemFragment fragment = EmblemFragment.newInstance(index);
-        requireActivity().getSupportFragmentManager()
-            .beginTransaction()
-            .replace(R.id.layout_container, fragment)
-            .commit();
-    }
-
-    private void startEmblemActivity(int index) {
-        Intent intent = new Intent(getActivity(), EmblemActivity.class);
-        intent.putExtra(EmblemFragment.ARG_INDEX, index);
-        startActivity(intent);
-    }
-
-
-    // for example
     private void initArrayList() {
-        notes.add(new SimpleNote("title", "desc", "21.02.2004"));
-        notes.add(new SimpleNote("title", "desc", "21.02.2004"));
-        notes.add(new SimpleNote("title", "desc", "21.02.2004"));
-        notes.add(new SimpleNote("title", "desc", "21.02.2004"));
+        cities.add(new City("title1", "desc", "21.02.2004"));
+        cities.add(new City("title2", "desc", "21.02.2004"));
+        cities.add(new City("title3", "desc", "21.02.2004"));
+        cities.add(new City("title4", "desc", "21.02.2004"));
+        cities.add(new City("title5", "desc", "21.02.2004"));
+        cities.add(new City("title6", "desc", "21.02.2004"));
+        cities.add(new City("title7", "desc", "21.02.2004"));
+        cities.add(new City("title8", "desc", "21.02.2004"));
+        cities.add(new City("title9", "desc", "21.02.2004"));
+        cities.add(new City("title10", "desc", "21.02.2004"));
+        cities.add(new City("title11", "desc", "21.02.2004"));
+        cities.add(new City("title12", "desc", "21.02.2004"));
+        cities.add(new City("title13", "desc", "21.02.2004"));
+        cities.add(new City("title14", "desc", "21.02.2004"));
+        cities.add(new City("title15", "desc", "21.02.2004"));
+        cities.add(new City("title16", "desc", "21.02.2004"));
     }
 }
